@@ -1,1 +1,4 @@
 dearpygui
+matplot
+numpy
+pandas
