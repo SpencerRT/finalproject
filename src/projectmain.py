@@ -1,16 +1,28 @@
+#ctrl s to save
+
 import numpy as np
 import matplotlib as plt
 import pandas as pd
 import dearpygui.dearpygui as dpg
 
+# A dictionary where the key is the name of the file, the value is path of the file
 files = {}
+
+# A list of the filenames we can use to index the dictionary and get the path
 filenames = []
+
+# A list of keys from the csv
 columns = []
+
+# A dictionary where the column names are the keys, the values are the values from the column
 csv_df = {}
+
+# Containers for the current keys from csv_df we are using for the graph 
 column_x = ""
 column_y = ""
 
-scatter_x_axis = ""
+# These will be axis widgets, we are just setting them as empty strings to access later
+scatter_x_axis = ""  
 scatter_y_axis = ""
 
 def setup_dpg():
@@ -62,7 +74,7 @@ def setup_window():
 
         dpg.add_plot_legend()
         scatter_x_axis = dpg.add_plot_axis(dpg.mvXAxis, label="x", tag="Scatter_x")
-        with dpg.plot_axis(dpg.mvYAxis, label="y", tag="Scatter_y") as yaxis:
+        with dpg.plot_axis(dpg.mvYAxis, label="y", tag="Scatter_y") as yaxis:       #Specifying to edit the y-axis
             dpg.add_scatter_series([],[], tag="Scatter Plot Data", label="ff")
             scatter_y_axis = yaxis
 
@@ -116,15 +128,14 @@ def update_plot_values():
     float_y = []
 
     for x in csv_df.get(column_x):
-        float_x.append(float(x))
+        float_x.append(float(x))   #Need to be floats in dearpygui
         
     for y in csv_df.get(column_y):
         float_y.append(float(y))
     
     print(float_x)
     print(float_y)
-    #dpg.set_axis_limits("Scatter_x", min(float_x), max(float_x))
-    #dpg.set_axis_limits("Scatter_y", min(float_y), max(float_y))
+    
     dpg.fit_axis_data(scatter_x_axis)
     dpg.fit_axis_data(scatter_y_axis)
 
