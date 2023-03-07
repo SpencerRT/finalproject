@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib as plt
 import pandas as pd
 import dearpygui.dearpygui as dpg
+import dearpygui.demo as demo
 
 # A dictionary where the key is the name of the file, the value is path of the file
 files = {}
@@ -25,6 +26,10 @@ column_y = ""
 scatter_x_axis = ""  
 scatter_y_axis = ""
 
+# Empty container to fill with the color we use
+color = []
+
+
 def setup_dpg():
     dpg.create_context()
     dpg.create_viewport(title='Final Project', width=1000, height=800)
@@ -44,6 +49,12 @@ def setup_window():
     global columns
     global scatter_x_axis
     global scatter_y_axis
+
+    with dpg.theme(tag="plot_theme"):
+        with dpg.theme_component(dpg.mvScatterSeries):
+            dpg.add_theme_color(dpg.mvPlotCol_Line, (255, 0, 0), category=dpg.mvThemeCat_Plots)
+            dpg.add_theme_style(dpg.mvPlotStyleVar_Marker, dpg.mvPlotMarker_Circle, category=dpg.mvThemeCat_Plots)
+            dpg.add_theme_style(dpg.mvPlotStyleVar_MarkerSize, 4, category=dpg.mvThemeCat_Plots)
 
     #===============================Load Button===========================================
     dpg.push_container_stack(dpg.add_window(tag="Primary Window"))
@@ -72,15 +83,24 @@ def setup_window():
     #===========================Scatter Plot================================================
     with dpg.plot(tag="Scatter Plot", label="Scatter Plot", height=400, width=-1):
 
-        dpg.add_plot_legend()
-        scatter_x_axis = dpg.add_plot_axis(dpg.mvXAxis, label="x", tag="Scatter_x")
+        scatter_x_axis = dpg.add_plot_axis(dpg.mvXAxis, label="x", tag="Scatter_x") #By default, the x-axis will be edited
         with dpg.plot_axis(dpg.mvYAxis, label="y", tag="Scatter_y") as yaxis:       #Specifying to edit the y-axis
-            dpg.add_scatter_series([],[], tag="Scatter Plot Data", label="ff")
             scatter_y_axis = yaxis
+            dpg.add_scatter_series([],[], tag="Scatter Plot Data", label="ff")
 
-    dpg.add_color_picker((255, 0, 255, 255), label="Color Picker", width=200, tag="_color_picker_id")
+        dpg.bind_item_theme("Scatter Plot Data", "plot_theme")
+    
+    #============================Color Picker============================================
+    dpg.add_color_picker((255, 0, 255, 255), callback = color_picker_callback, label="Color Picker", width=200, tag="_color_picker_id")
     dpg.pop_container_stack()
     dpg.set_primary_window("Primary Window", True)
+
+#Color picker function
+
+def color_picker_callback(sender, user_data):
+    global color
+    color = user_data
+    print(color)
 
 #File dialog functions
 
@@ -160,13 +180,9 @@ def populate_listboxes():
     dpg.configure_item("listbox_y", items=columns, num_items=len(columns))
 
 
-    #plt.save_fig("file.png")
-    #dpg.addimage("file.png")
-
-
 def main():
     setup_dpg()
-    
+    demo.show_demo()
 
     setup_window()
     print("App Entered")
