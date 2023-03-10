@@ -12,6 +12,18 @@ Then, we install the project dependencies:
 .\install-requirements.bat
 ```
 
+### Unix (Mac and Linux)
+```bash
+./install-requirements.sh
+```
+
+### If file permissions are an issue 
+Just execute this command:
+
+```bash
+chmod u+x install-requirements.sh
+```
+
 Finally, run the program:
 ```batch
 python3 src\projectmain.py
