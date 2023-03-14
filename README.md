@@ -26,5 +26,5 @@ chmod u+x install-requirements.sh
 
 Finally, run the program:
 ```batch
-python3 src\projectmain.py
+python3 src/projectmain.py
 ```
