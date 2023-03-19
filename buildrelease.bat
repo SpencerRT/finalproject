@@ -1,0 +1,1 @@
+pyinstaller --onefile --clean --icon=site.ico --add-data "site.ico;." --add-data "BrixSansRegular.otf;." .\src\projectmain.py
