@@ -2,3 +2,4 @@ dearpygui
 matplot
 numpy
 pandas
+pyinstaller

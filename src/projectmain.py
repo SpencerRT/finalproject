@@ -5,6 +5,7 @@ import matplotlib as plt
 import pandas as pd
 import dearpygui.dearpygui as dpg
 import dearpygui.demo as demo
+import os
 
 # A dictionary where the key is the name of the file, the value is path of the file
 files = {}
@@ -26,21 +27,21 @@ column_y = ""
 scatter_x_axis = ""  
 scatter_y_axis = ""
 
-# Empty container to fill with the color we use
-color = []
-
-
 def setup_dpg():
     dpg.create_context()
     dpg.create_viewport(title='Final Project', width=1000, height=800)
+    dpg.set_viewport_large_icon(os.path.abspath(os.path.dirname(__file__)) + "/site.ico")
+    dpg.set_viewport_small_icon(os.path.abspath(os.path.dirname(__file__)) + "/site.ico")
     dpg.setup_dearpygui()
     dpg.show_viewport()
 
     with dpg.font_registry():
         # first argument ids the path to the .ttf or .otf file
-        default_font = dpg.add_font("BrixSansRegular.otf", 20)
+        default_font = dpg.add_font(os.path.abspath(os.path.dirname(__file__)) + "/BrixSansRegular.otf", 20)
 
     dpg.bind_font(default_font)
+
+
 
 def show_file_dialog():
     dpg.show_item("file_dialog_id")
@@ -50,17 +51,17 @@ def setup_window():
     global scatter_x_axis
     global scatter_y_axis
 
-    with dpg.theme(tag="plot_theme"):
-        with dpg.theme_component(dpg.mvScatterSeries):
-            dpg.add_theme_color(dpg.mvPlotCol_Line, (255, 0, 0), category=dpg.mvThemeCat_Plots)
-            dpg.add_theme_style(dpg.mvPlotStyleVar_Marker, dpg.mvPlotMarker_Circle, category=dpg.mvThemeCat_Plots)
-            dpg.add_theme_style(dpg.mvPlotStyleVar_MarkerSize, 4, category=dpg.mvThemeCat_Plots)
+    with dpg.theme(tag="plottheme"): # this theme can now be referenced as "plottheme" in dpg functions that use it
+        with dpg.theme_component(dpg.mvAll):
+            dpg.add_theme_color(dpg.mvPlotCol_Line, (255, 255, 255, 255), tag="plotcolor",category=dpg.mvThemeCat_Plots) # setting white to be the default plot color, this themecolor can be referenced by its tag "plotcolor" in dpg functions that use it
+            dpg.add_theme_color(dpg.mvPlotCol_MarkerOutline, (255,0,0,255), tag="legendcolor",category=dpg.mvThemeCat_Plots)
 
     #===============================Load Button===========================================
     dpg.push_container_stack(dpg.add_window(tag="Primary Window"))
     with dpg.group(horizontal=True):
         dpg.add_text("Files:")
         dpg.add_button(label="Load", callback=show_file_dialog)
+        dpg.add_button(label="Save Image", callback=lambda:dpg.save_image(file="newImage.png", width=width, height=height, data=data, components=3))
     
     #=================================ListBoxes========================================
     window_width = dpg.get_item_width("Primary Window")
@@ -82,25 +83,35 @@ def setup_window():
 
     #===========================Scatter Plot================================================
     with dpg.plot(tag="Scatter Plot", label="Scatter Plot", height=400, width=-1):
-
+    
         scatter_x_axis = dpg.add_plot_axis(dpg.mvXAxis, label="x", tag="Scatter_x") #By default, the x-axis will be edited
         with dpg.plot_axis(dpg.mvYAxis, label="y", tag="Scatter_y") as yaxis:       #Specifying to edit the y-axis
             scatter_y_axis = yaxis
             dpg.add_scatter_series([],[], tag="Scatter Plot Data", label="ff")
 
-        dpg.bind_item_theme("Scatter Plot Data", "plot_theme")
+        dpg.bind_item_theme("Scatter Plot", "plottheme")
     
     #============================Color Picker============================================
     dpg.add_color_picker((255, 0, 255, 255), callback = color_picker_callback, label="Color Picker", width=200, tag="_color_picker_id")
     dpg.pop_container_stack()
     dpg.set_primary_window("Primary Window", True)
 
+    #===========================Save Image=============================================
+    width, height = 255, 255
+
+    data = []
+    for i in range(width*height):
+        data.append(255)
+        data.append(255)
+        data.append(0)
+    
 #Color picker function
 
 def color_picker_callback(sender, user_data):
-    global color
-    color = user_data
-    print(color)
+    
+    rgba32 = [255 * x for x in user_data]
+    dpg.set_value("plotcolor", tuple(rgba32))
+    dpg.set_value("legendcolor", tuple(rgba32))
 
 #File dialog functions
 
