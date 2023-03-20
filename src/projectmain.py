@@ -1,10 +1,6 @@
 #ctrl s to save
-
-import numpy as np
-import matplotlib as plt
 import pandas as pd
 import dearpygui.dearpygui as dpg
-import dearpygui.demo as demo
 import os
 
 # A dictionary where the key is the name of the file, the value is path of the file
@@ -30,17 +26,16 @@ scatter_y_axis = ""
 def setup_dpg():
     dpg.create_context()
     dpg.create_viewport(title='Final Project', width=1000, height=800)
-    dpg.set_viewport_large_icon(os.path.abspath(os.path.dirname(__file__)) + "/site.ico")
-    dpg.set_viewport_small_icon(os.path.abspath(os.path.dirname(__file__)) + "/site.ico")
+    #dpg.set_viewport_large_icon(os.path.abspath(os.path.dirname(__file__)) + "/site.ico")
+    #dpg.set_viewport_small_icon(os.path.abspath(os.path.dirname(__file__)) + "/site.ico")
     dpg.setup_dearpygui()
     dpg.show_viewport()
 
-    with dpg.font_registry():
+    #with dpg.font_registry():
         # first argument ids the path to the .ttf or .otf file
-        default_font = dpg.add_font(os.path.abspath(os.path.dirname(__file__)) + "/BrixSansRegular.otf", 20)
+        #default_font = dpg.add_font(os.path.abspath(os.path.dirname(__file__)) + "/BrixSansRegular.otf", 20)
 
-    dpg.bind_font(default_font)
-
+    #dpg.bind_font(default_font)
 
 
 def show_file_dialog():
@@ -61,7 +56,6 @@ def setup_window():
     with dpg.group(horizontal=True):
         dpg.add_text("Files:")
         dpg.add_button(label="Load", callback=show_file_dialog)
-        dpg.add_button(label="Save Image", callback=lambda:dpg.save_image(file="newImage.png", width=width, height=height, data=data, components=3))
     
     #=================================ListBoxes========================================
     window_width = dpg.get_item_width("Primary Window")
@@ -96,14 +90,6 @@ def setup_window():
     dpg.pop_container_stack()
     dpg.set_primary_window("Primary Window", True)
 
-    #===========================Save Image=============================================
-    width, height = 255, 255
-
-    data = []
-    for i in range(width*height):
-        data.append(255)
-        data.append(255)
-        data.append(0)
     
 #Color picker function
 
@@ -111,7 +97,6 @@ def color_picker_callback(sender, user_data):
     
     rgba32 = [255 * x for x in user_data]
     dpg.set_value("plotcolor", tuple(rgba32))
-    dpg.set_value("legendcolor", tuple(rgba32))
 
 #File dialog functions
 
@@ -193,7 +178,6 @@ def populate_listboxes():
 
 def main():
     setup_dpg()
-    demo.show_demo()
 
     setup_window()
     print("App Entered")
